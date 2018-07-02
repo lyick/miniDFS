@@ -1,9 +1,13 @@
 package Global;
 
+import Util.Block;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.concurrent.CyclicBarrier;
 
 public class Global {
-    public final static String OUTPUT_FORMAT = "%-10d%-20s%-10s%n";
+    public final static String OUTPUT_FORMAT = "%-10d%-24s%-12s%n";
     public final static int BLOCK_SIZE = 1024 * 1024 * 2;
     public static boolean cmd_flag;
     public static Operation cmd_type;
@@ -15,15 +19,16 @@ public class Global {
     public static CyclicBarrier read_event = new CyclicBarrier(2);
     public static CyclicBarrier[] main_event = new CyclicBarrier[4];
     public static CyclicBarrier[] data_event = new CyclicBarrier[4];
+    public static HashMap<Integer, ArrayList<Block>> blockServer = new HashMap<>();
     public final static int SERVER_NUMBER = 4;
 
-    static{
-        for(CyclicBarrier cb : main_event){
-            cb = new CyclicBarrier(2);
+    public static void init(){
+        for(int i =0;i < 4 ;i ++){
+            main_event[i] = new CyclicBarrier(2);
         }
 
-        for(CyclicBarrier cb : data_event){
-            cb = new CyclicBarrier(2);
+        for(int i =0;i < 4 ;i ++){
+            data_event[i] = new CyclicBarrier(2);
         }
     }
 

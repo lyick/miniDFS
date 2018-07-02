@@ -2,6 +2,7 @@ package Main;
 
 import Global.Global;
 import Global.Operation;
+import Node.DataNode;
 import Node.NameNode;
 
 
@@ -13,6 +14,7 @@ import java.util.concurrent.BrokenBarrierException;
 public class Main {
 
     public void init(){
+        Global.init();
         //文件夹创建
         File dfsdir = new File("dfs");
         if(!dfsdir.exists())
@@ -30,7 +32,11 @@ public class Main {
         //线程创建开启
         NameNode nameNode = new NameNode();
         nameNode.start();
-        //
+        for(int i = 0; i < 4; i++)
+        {
+            DataNode dataNode = new DataNode(i);
+            dataNode.start();
+        }
     }
 
     public void start() throws BrokenBarrierException, InterruptedException {
@@ -45,16 +51,17 @@ public class Main {
                 else if (Global.cmd_type == Operation.put){
                     for(int i=0;i<Global.SERVER_NUMBER;i++)
                         Global.main_event[i].await();
+                    System.out.println("Upload success!");
                 }
                 else if (Global.cmd_type == Operation.read)
                     Global.read_event.await();
 
                 else if (Global.cmd_type == Operation.ls)
                     Global.ls_event.await();
-
-                else if (Global.cmd_type == Operation.fetch)
-                    for(int i=0;i<Global.SERVER_NUMBER;i++)
-                        Global.main_event[i].await();
+                else if (Global.cmd_type == Operation.fetch) {
+                    Global.main_event[0].await();
+                    System.out.println("Fetch success!");
+                }
                 else
                     continue;
 
